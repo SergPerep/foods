@@ -1,23 +1,37 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using foods.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace foods.Controllers
 {
     [ApiController]
-    [Route("/")]
+    [Route("foods")]
     public class FoodController : ControllerBase
     {
-        // GET: FoodController
-        public ActionResult GetFoods()
+        private FoodContext _context;
+
+        public FoodController(FoodContext context)
         {
-            return View();
+            _context = context;
         }
 
-        //// GET: FoodController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public async Task<ActionResult<List<Food>>> GetAllFoods()
+        {
+            return await _context.Foods.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Food>> GetFood(int id)
+        {
+            Food? food = await _context.Foods.FindAsync(id);
+            if (food != null)
+            {
+                return food;
+            }
+            return NotFound();
+        }
 
         //// GET: FoodController/Create
         //public ActionResult Create()

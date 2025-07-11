@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace foods.Model
 {
@@ -9,5 +10,11 @@ namespace foods.Model
         }
 
         public DbSet<Food> Foods { get; set; }
+
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // {
+        //     base.OnModelCreating(modelBuilder);
+        //     modelBuilder.Entity<Food>().ToTable("foods");
+        // }
     }
 }
