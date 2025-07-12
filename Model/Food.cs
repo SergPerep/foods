@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using foods.DTOs;
 
 namespace foods.Model
 {
@@ -19,5 +20,14 @@ namespace foods.Model
         public int Fiber { get; set; }
         [Column("alcohol")]
         public int Alcohol { get; set; }
+
+        public Food(FoodDTO foodDTO)
+        {
+            Protein = foodDTO.Protein;
+            Carbs = foodDTO.Carbs;
+            Fat = foodDTO.Fat;
+            Fiber = foodDTO.Fiber;
+            Alcohol = foodDTO.Alcohol;
+        }
     }
 }

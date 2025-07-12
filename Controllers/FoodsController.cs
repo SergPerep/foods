@@ -1,4 +1,5 @@
-﻿using foods.Model;
+﻿using foods.DTOs;
+using foods.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,23 +10,23 @@ namespace foods.Controllers
     [Route("foods")]
     public class FoodController : ControllerBase
     {
-        private FoodContext _context;
+        private FoodContext _db;
 
         public FoodController(FoodContext context)
         {
-            _context = context;
+            _db = context;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Food>>> GetAllFoods()
         {
-            return await _context.Foods.ToListAsync();
+            return await _db.Foods.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Food>> GetFood(int id)
         {
-            Food? food = await _context.Foods.FindAsync(id);
+            Food? food = await _db.Foods.FindAsync(id);
             if (food != null)
             {
                 return food;
@@ -33,67 +34,23 @@ namespace foods.Controllers
             return NotFound();
         }
 
-        //// GET: FoodController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
+        [HttpPost]
+        public async Task<ActionResult> AddFood([FromBody] FoodDTO foodDTO)
+        {
 
-        //// POST: FoodController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+            Food item = new Food(foodDTO) { Name = foodDTO.Name };
+            await _db.Foods.AddAsync(item);
+            await _db.SaveChangesAsync();
 
-        //// GET: FoodController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+            return CreatedAtAction(nameof(AddFood), new { id = item.Id }, item);
+        }
 
-        //// POST: FoodController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // Add bulk of foods
 
-        //// GET: FoodController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+        // Update
 
-        //// POST: FoodController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // Delete
+
+        // Delete all
     }
 }
