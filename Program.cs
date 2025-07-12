@@ -1,4 +1,4 @@
-using foods.Model;
+using foods.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using foods.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace foods.Model
+namespace foods.Data
 {
     public class FoodContext : DbContext
     {
