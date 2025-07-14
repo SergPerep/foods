@@ -18,6 +18,7 @@ namespace foods.Controllers
         }
 
         [HttpGet]
+        [Route("all")]
         public async Task<ActionResult<List<Food>>> GetAllFoods()
         {
             return await _db.Foods.ToListAsync();
@@ -38,7 +39,7 @@ namespace foods.Controllers
         public async Task<ActionResult> AddFood([FromBody] FoodDTO foodDTO)
         {
 
-            Food item = new Food(foodDTO) { Name = foodDTO.Name };
+            Food item = foodDTO.ToFood();
             await _db.Foods.AddAsync(item);
             await _db.SaveChangesAsync();
 
@@ -47,10 +48,46 @@ namespace foods.Controllers
 
         // Add bulk of foods
 
-        // Update
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateFood(int id, [FromBody] FoodDTO foodDTO)
+        {
 
-        // Delete
+            Food? food = await _db.Foods.FindAsync(id);
+            if (food == null)
+            {
+                return NotFound();
+            }
 
-        // Delete all
+            food.Name = foodDTO.Name;
+            food.Protein = foodDTO.Protein;
+            food.Carbs = foodDTO.Carbs;
+            food.Fiber = foodDTO.Fiber;
+            food.Alcohol = foodDTO.Alcohol;
+            await _db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteFood(int id)
+        {
+            Food? food = await _db.Foods.FindAsync(id);
+            if (food == null)
+            {
+                return NotFound();
+            }
+            _db.Foods.Remove(food);
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("all")]
+        public async Task<ActionResult> DeleteAllFoods()
+        {
+            Food[] foods = _db.Foods.ToArray();
+            _db.Foods.RemoveRange(foods);
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
