@@ -1,4 +1,4 @@
-﻿using foods.Data;
+﻿using foods.Database;
 using foods.DTOs;
 using foods.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +10,14 @@ namespace foods.Controllers
     [Route("foods")]
     public class FoodController : ControllerBase
     {
-        private FoodContext _db;
+        private DatabaseContext _db;
 
-        public FoodController(FoodContext context)
+        public FoodController(DatabaseContext context)
         {
             _db = context;
         }
 
-        [HttpGet]
-        [Route("all")]
+        [HttpGet("all")]
         public async Task<ActionResult<List<Food>>> GetAllFoods()
         {
             return await _db.Foods.ToListAsync();
@@ -78,7 +77,7 @@ namespace foods.Controllers
             }
             _db.Foods.Remove(food);
             await _db.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("all")]
