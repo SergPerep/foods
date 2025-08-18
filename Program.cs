@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(
-    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRESQLCONNSTR_PostgresConnection"))
+    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
     );
 builder.Services.AddControllers();
 
