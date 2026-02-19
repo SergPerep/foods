@@ -61,6 +61,7 @@ namespace foods.Controllers
             food.Protein = foodDTO.Protein;
             food.Carbs = foodDTO.Carbs;
             food.Fiber = foodDTO.Fiber;
+            food.Fat = foodDTO.Fat;
             food.Alcohol = foodDTO.Alcohol;
             await _db.SaveChangesAsync();
 
