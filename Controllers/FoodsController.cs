@@ -1,8 +1,7 @@
-﻿using foods.Database;
+﻿using foods.Services;
 using foods.DTOs;
 using foods.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace foods.Controllers
 {
@@ -10,23 +9,24 @@ namespace foods.Controllers
     [Route("foods")]
     public class FoodController : ControllerBase
     {
-        private DatabaseContext _db;
+        private readonly CosmosDBService _service;
 
-        public FoodController(DatabaseContext context)
+        public FoodController(CosmosDBService service)
         {
-            _db = context;
+            _service = service;
         }
 
         [HttpGet("all")]
         public async Task<ActionResult<List<Food>>> GetAllFoods()
         {
-            return await _db.Foods.ToListAsync();
+            var results = await _service.GetAll();
+            return results;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Food>> GetFood(int id)
         {
-            Food? food = await _db.Foods.FindAsync(id);
+            var food = await _service.Get(id.ToString(), id.ToString());
             if (food != null)
             {
                 return food;
@@ -37,11 +37,8 @@ namespace foods.Controllers
         [HttpPost]
         public async Task<ActionResult> AddFood([FromBody] FoodDTO foodDTO)
         {
-
             Food item = foodDTO.ToFood();
-            await _db.Foods.AddAsync(item);
-            await _db.SaveChangesAsync();
-
+            await _service.Insert(item);
             return CreatedAtAction(nameof(AddFood), new { id = item.Id }, item);
         }
 
@@ -50,8 +47,7 @@ namespace foods.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateFood(int id, [FromBody] FoodDTO foodDTO)
         {
-
-            Food? food = await _db.Foods.FindAsync(id);
+            var food = await _service.Get(id.ToString(), id.ToString());
             if (food == null)
             {
                 return NotFound();
@@ -63,30 +59,26 @@ namespace foods.Controllers
             food.Fiber = foodDTO.Fiber;
             food.Fat = foodDTO.Fat;
             food.Alcohol = foodDTO.Alcohol;
-            await _db.SaveChangesAsync();
 
+            await _service.Insert(food);
             return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteFood(int id)
         {
-            Food? food = await _db.Foods.FindAsync(id);
-            if (food == null)
-            {
-                return NotFound();
-            }
-            _db.Foods.Remove(food);
-            await _db.SaveChangesAsync();
+            await _service.Delete(id.ToString(), id.ToString());
             return NoContent();
         }
 
         [HttpDelete("all")]
         public async Task<ActionResult> DeleteAllFoods()
         {
-            Food[] foods = _db.Foods.ToArray();
-            _db.Foods.RemoveRange(foods);
-            await _db.SaveChangesAsync();
+            var foods = await _service.GetAll();
+            foreach (var f in foods)
+            {
+                await _service.Delete(f.Id.ToString(), f.Id.ToString());
+            }
             return Ok();
         }
     }

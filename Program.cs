@@ -1,19 +1,24 @@
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using foods.Database;
-using Microsoft.EntityFrameworkCore;
+using foods.Services;
 
-var keyVaultUrl = "https://foods-key-vault.vault.azure.net/";
-var secretName = "postgres-connection-string";
-var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-
-KeyVaultSecret dbConnectionStringSecret = await client.GetSecretAsync(secretName);
+var credential =  new DefaultAzureCredential();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DatabaseContext>(
-    opt => opt.UseNpgsql(dbConnectionStringSecret.Value)
-    );
+var config = new ConfigurationBuilder()
+	.SetBasePath(AppContext.BaseDirectory)
+	.AddJsonFile("appsettings.json", optional: false) // Reads json
+	.Build();
+
+
+builder.Services.AddSingleton(s =>
+{
+	return new CosmosDBService(
+		cosmosDbAccount: config["CosmosDB:Account"],
+		cosmosDbName: config["CosmosDB:Database"],
+		cosmosDbContainer: config["CosmosDB:Container"]);
+});
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
