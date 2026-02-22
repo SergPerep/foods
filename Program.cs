@@ -14,9 +14,9 @@ var config = new ConfigurationBuilder()
 builder.Services.AddSingleton(s =>
 {
 	return new CosmosDBService(
-		cosmosDbAccount: config["CosmosDB:Account"],
-		cosmosDbName: config["CosmosDB:Database"],
-		cosmosDbContainer: config["CosmosDB:Container"]);
+		cosmosDbAccount: config["CosmosDBAccount"],
+		cosmosDbName: config["CosmosDBDatabase"],
+		cosmosDbContainer: config["CosmosDBContainer"]);
 });
 
 builder.Services.AddControllers();
