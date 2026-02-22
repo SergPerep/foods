@@ -1,5 +1,6 @@
 using Azure.Identity;
 using foods.Services;
+using Microsoft.Extensions.Configuration;
 
 var credential =  new DefaultAzureCredential();
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder()
 	.SetBasePath(AppContext.BaseDirectory)
+	.AddEnvironmentVariables()
 	.AddJsonFile("appsettings.json", optional: false) // Reads json
 	.Build();
 
