@@ -1,23 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
 
 namespace foods.Model
 {
-    [Table("foods")]
     public class Food
     {
-        [Column("id")]
-        public int Id { get; set; }
-        [Column("name")]
+        [JsonProperty("pk")]
+        public string Pk { get; set; } = "constant";
+        [JsonProperty("id")]
+        public string Id { get; set; } = "";
+        [JsonProperty("name")]
         public required string Name { get; set; }
-        [Column("protein")]
+        [JsonProperty("protein")]
         public int Protein { get; set; }
-        [Column("carbs")]
+        [JsonProperty("carbs")]
         public int Carbs { get; set; }
-        [Column("fat")]
+        [JsonProperty("fat")]
         public int Fat { get; set; }
-        [Column("fiber")]
+        [JsonProperty("fiber")]
         public int Fiber { get; set; }
-        [Column("alcohol")]
+        [JsonProperty("alcohol")]
         public int Alcohol { get; set; }
     }
 }

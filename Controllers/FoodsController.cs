@@ -2,6 +2,7 @@
 using foods.DTOs;
 using foods.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace foods.Controllers
 {
@@ -24,9 +25,9 @@ namespace foods.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Food>> GetFood(int id)
+        public async Task<ActionResult<Food>> GetFood(string id)
         {
-            var food = await _service.Get(id.ToString(), id.ToString());
+            var food = await _service.Get(id);
             if (food != null)
             {
                 return food;
@@ -45,9 +46,9 @@ namespace foods.Controllers
         // Add bulk of foods
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateFood(int id, [FromBody] FoodDTO foodDTO)
+        public async Task<ActionResult> UpdateFood(string id, [FromBody] FoodDTO foodDTO)
         {
-            var food = await _service.Get(id.ToString(), id.ToString());
+            var food = await _service.Get(id);
             if (food == null)
             {
                 return NotFound();
@@ -60,14 +61,16 @@ namespace foods.Controllers
             food.Fat = foodDTO.Fat;
             food.Alcohol = foodDTO.Alcohol;
 
+            Console.WriteLine(JsonSerializer.Serialize(food));
+
             await _service.Insert(food);
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteFood(int id)
+        public async Task<ActionResult> DeleteFood(string id)
         {
-            await _service.Delete(id.ToString(), id.ToString());
+            await _service.Delete(id);
             return NoContent();
         }
 
@@ -77,7 +80,7 @@ namespace foods.Controllers
             var foods = await _service.GetAll();
             foreach (var f in foods)
             {
-                await _service.Delete(f.Id.ToString(), f.Id.ToString());
+                await _service.Delete(f.Id);
             }
             return Ok();
         }
