@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var config = new ConfigurationBuilder()
 	.SetBasePath(AppContext.BaseDirectory)
 	.AddEnvironmentVariables()
-	.AddJsonFile("appsettings.json", optional: false) // Reads json
+	.AddJsonFile("appsettings.json", optional: true) // Reads json
 	.Build();
 
 
